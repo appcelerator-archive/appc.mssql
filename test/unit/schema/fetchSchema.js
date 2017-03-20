@@ -21,7 +21,6 @@ test('### Start Arrow ###', function (t) {
 })
 
 test('### Fetch Schema error ###', function (t) {
-  var sql = require('mssql')
   const nextSpy = sinon.spy()
 
   var test1 = {
@@ -56,7 +55,7 @@ test('### Fetch Schema without error###', function (t) {
     COLUMN_NAME: 'id',
     TABLE_NAME: 'Posts'
   }
-  
+
   var schema =
     {
       objects: { Posts: { id: { COLUMN_NAME: 'id', TABLE_NAME: 'Posts' } } },

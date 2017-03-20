@@ -56,6 +56,8 @@ test('### FindByID Empty Response With PrimaryKey ###', function (t) {
     }
   )
 
+  const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
   findByIdMethod.bind(CONNECTOR, Model, '3', cbSpy)()
 
   setImmediate(function () {
@@ -63,6 +65,7 @@ test('### FindByID Empty Response With PrimaryKey ###', function (t) {
     t.ok(getPrimaryKeyColumn.calledOnce)
     t.ok(sqlStub.calledOnce)
     t.ok(cbSpy.calledOnce)
+    t.ok(loggerStub.calledTwice)
     t.ok(cbSpy.calledWith())
 
     sandbox.restore()
@@ -107,6 +110,8 @@ test('### FindByID Empty Response Without PrimaryKey ###', function (t) {
     }
   )
 
+  const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
   findByIdMethod.bind(CONNECTOR, Model, '3', cbSpy)()
 
   setImmediate(function () {
@@ -114,6 +119,7 @@ test('### FindByID Empty Response Without PrimaryKey ###', function (t) {
     t.ok(getPrimaryKeyColumn.calledOnce)
     t.ok(sqlStub.calledOnce)
     t.ok(cbSpy.calledOnce)
+    t.ok(loggerStub.calledTwice)
     t.ok(cbSpy.calledWith())
 
     sandbox.restore()
@@ -158,6 +164,8 @@ test('### FindByID Error Response ###', function (t) {
     }
   )
 
+  const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
   findByIdMethod.bind(CONNECTOR, Model, '3', cbSpy)()
 
   setImmediate(function () {
@@ -165,6 +173,7 @@ test('### FindByID Error Response ###', function (t) {
     t.ok(getPrimaryKeyColumn.calledOnce)
     t.ok(sqlStub.calledOnce)
     t.ok(cbSpy.calledOnce)
+    t.ok(loggerStub.calledTwice)
     t.ok(cbSpy.calledWith('error'))
 
     sandbox.restore()
@@ -219,6 +228,10 @@ test('### FindByID Non Empty Response With PrimaryKey ###', function (t) {
     }
   )
 
+  const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
+
   findByIdMethod.bind(CONNECTOR, Model, '3', cbSpy)()
 
   setImmediate(function () {
@@ -227,6 +240,8 @@ test('### FindByID Non Empty Response With PrimaryKey ###', function (t) {
     t.ok(transformRowStub.calledOnce)
     t.ok(sqlStub.calledOnce)
     t.ok(cbSpy.calledOnce)
+    t.ok(loggerStub.calledTwice)
+    t.ok(loggerTraceStub.calledOnce)
 
     sandbox.restore()
     t.end()
@@ -278,6 +293,10 @@ test('### FindByID Non Empty Response Without PrimaryKey ###', function (t) {
     }
   )
 
+  const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
+  
   findByIdMethod.bind(CONNECTOR, Model, '3', cbSpy)()
 
   setImmediate(function () {
@@ -286,6 +305,8 @@ test('### FindByID Non Empty Response Without PrimaryKey ###', function (t) {
     t.ok(transformRowStub.calledOnce)
     t.ok(sqlStub.calledOnce)
     t.ok(cbSpy.calledOnce)
+    t.ok(loggerStub.calledTwice)
+    t.ok(loggerTraceStub.calledOnce)
 
     sandbox.restore()
     t.end()

@@ -3,6 +3,7 @@ const server = require('./../../server.js')
 const sinon = require('sinon')
 const sql = require('mssql')
 const _ = require('lodash')
+const arrow = require('arrow')
 const queryMethod = require('../../../lib/methods/query').query
 const data = {
   title: 'Catch-22',
@@ -88,6 +89,8 @@ test('### Query Empty Response ###', function (t) {
 
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
 
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
+
   queryMethod.bind(CONNECTOR, Model, options, cbSpy)()
 
   setImmediate(function () {
@@ -98,6 +101,7 @@ test('### Query Empty Response ###', function (t) {
     t.ok(addValuesToSQLRequestStub.calledOnce)
     t.ok(cbSpy.calledOnce)
     t.ok(loggerStub.calledTwice)
+    t.ok(loggerTraceStub.calledOnce)
 
     sandbox.restore()
     t.end()
@@ -170,6 +174,8 @@ test('### Query Error Response ###', function (t) {
 
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
 
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
+
   queryMethod.bind(CONNECTOR, Model, options, cbSpy)()
 
   setImmediate(function () {
@@ -180,6 +186,7 @@ test('### Query Error Response ###', function (t) {
     t.ok(addValuesToSQLRequestStub.calledOnce)
     t.ok(cbSpy.calledOnce)
     t.ok(loggerStub.calledTwice)
+    t.ok(loggerTraceStub.calledOnce)
     t.ok(sqlStub.calledOnce)
 
     sandbox.restore()
@@ -242,7 +249,25 @@ test('### Query Response With PrimaryKey ###', function (t) {
     }
   )
 
+   const transformRowStub = sandbox.stub(
+    CONNECTOR,
+    'transformRow',
+    (Model, row) => {
+      return {}
+    }
+  )
+
+  const arrowCollectionStub = sandbox.stub(
+    arrow,
+    'Collection',
+    (Model, rows) => {
+      return data
+    }
+  )
+
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
 
   queryMethod.bind(CONNECTOR, Model, options, cbSpy)()
 
@@ -254,6 +279,9 @@ test('### Query Response With PrimaryKey ###', function (t) {
     t.ok(sqlStub.calledOnce)
     t.ok(cbSpy.calledOnce)
     t.ok(loggerStub.calledTwice)
+    t.ok(loggerTraceStub.calledOnce)
+    t.ok(transformRowStub.calledOnce)
+    t.ok(arrowCollectionStub.calledOnce)
 
     sandbox.restore()
     t.end()
@@ -302,7 +330,25 @@ test('### Query Response Without PrimaryKey ###', function (t) {
     }
   )
 
+  const transformRowStub = sandbox.stub(
+    CONNECTOR,
+    'transformRow',
+    (Model, row) => {
+      return {}
+    }
+  )
+
+  const arrowCollectionStub = sandbox.stub(
+    arrow,
+    'Collection',
+    (Model, rows) => {
+      return data
+    }
+  )
+
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
 
   queryMethod.bind(CONNECTOR, Model, options, cbSpy)()
 
@@ -312,6 +358,9 @@ test('### Query Response Without PrimaryKey ###', function (t) {
     t.ok(cbSpy.calledOnce)
     t.ok(sqlStub.calledOnce)
     t.ok(loggerStub.calledTwice)
+    t.ok(loggerTraceStub.calledOnce)
+    t.ok(transformRowStub.calledOnce)
+    t.ok(arrowCollectionStub.calledOnce)
 
     sandbox.restore()
     t.end()

@@ -2,6 +2,7 @@ const test = require('tap').test
 const server = require('./../../server.js')
 const sinon = require('sinon')
 const sql = require('mssql')
+const arrow = require('arrow')
 const findAllMethod = require('../../../lib/methods/findAll').findAll
 const data = {
   title: 'Catch-22',
@@ -35,9 +36,21 @@ test('### FindAll Response With PrimaryKey ###', function (t) {
     (connection) => {
       return {
         input: function (param, varChar, id) { },
-        query: function (query, findByIDQueryCallback) {
-          findByIDQueryCallback(null, [data])
+        query: function (query, findAllQueryCallback) {
+          setImmediate(function () {
+            findAllQueryCallback(null, [data])
+          })
         }
+      }
+    }
+  )
+
+  const transformRowStub = sandbox.stub(
+    CONNECTOR,
+    'transformRow',
+    (Model, row) => {
+      return {
+        title: 'Catch-22'
       }
     }
   )
@@ -58,15 +71,34 @@ test('### FindAll Response With PrimaryKey ###', function (t) {
     }
   )
 
+  const arrowCollectionStub = sandbox.stub(
+    arrow,
+    'Collection',
+    (Model, rows) => {
+      return data
+    }
+  )
+
+  const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
+
   findAllMethod.bind(CONNECTOR, Model, cbSpy)()
 
-  t.ok(getTableNameStub.calledOnce)
-  t.ok(getPrimaryKeyColumn.calledOnce)
-  t.ok(cbSpy.calledOnce)
-  t.ok(sqlStub.calledOnce)
+  setImmediate(function () {
+    t.ok(getTableNameStub.calledOnce)
+    t.ok(getPrimaryKeyColumn.calledOnce)
+    t.ok(cbSpy.calledOnce)
+    t.ok(sqlStub.calledOnce)
+    t.ok(transformRowStub.calledOnce)
+    t.ok(loggerStub.calledOnce)
+    t.ok(arrowCollectionStub.calledOnce)
+    t.ok(loggerTraceStub.calledOnce)
+    t.ok(cbSpy.calledWith(null, data))
 
-  sandbox.restore()
-  t.end()
+    sandbox.restore()
+    t.end()
+  })
 })
 
 test('### FindByAll Response Without PrimaryKey ###', function (t) {
@@ -81,8 +113,10 @@ test('### FindByAll Response Without PrimaryKey ###', function (t) {
     (connection) => {
       return {
         input: function (param, varChar, id) { },
-        query: function (query, findByIDQueryCallback) {
-          findByIDQueryCallback(null, [data])
+        query: function (query, findAllQueryCallback) {
+          setImmediate(function () {
+            findAllQueryCallback(null, [data])
+          })
         }
       }
     }
@@ -104,16 +138,44 @@ test('### FindByAll Response Without PrimaryKey ###', function (t) {
     }
   )
 
+  const transformRowStub = sandbox.stub(
+    CONNECTOR,
+    'transformRow',
+    (Model, row) => {
+      return {
+        title: 'Catch-22'
+      }
+    }
+  )
+
+  const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
+  const arrowCollectionStub = sandbox.stub(
+    arrow,
+    'Collection',
+    (Model, rows) => {
+      return data
+    }
+  )
+
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
+
   findAllMethod.bind(CONNECTOR, Model, cbSpy)()
 
-  t.ok(getTableNameStub.calledOnce)
-  t.ok(getPrimaryKeyColumn.calledOnce)
-  t.ok(sqlStub.calledOnce)
-  t.ok(cbSpy.calledOnce)
-  t.ok(cbSpy.calledWith())
+  setImmediate(function () {
+    t.ok(getTableNameStub.calledOnce)
+    t.ok(getPrimaryKeyColumn.calledOnce)
+    t.ok(cbSpy.calledOnce)
+    t.ok(sqlStub.calledOnce)
+    t.ok(transformRowStub.calledOnce)
+    t.ok(loggerStub.calledOnce)
+    t.ok(arrowCollectionStub.calledOnce)
+    t.ok(loggerTraceStub.calledOnce)
+    t.ok(cbSpy.calledWith(null, data))
 
-  sandbox.restore()
-  t.end()
+    sandbox.restore()
+    t.end()
+  })
 })
 
 test('### FindAll Error ###', function (t) {
@@ -144,23 +206,30 @@ test('### FindAll Error ###', function (t) {
     (connection) => {
       return {
         input: function (param, varChar, id) { },
-        query: function (query, findByIDQueryCallback) {
-          findByIDQueryCallback('Error')
+        query: function (query, findAllQueryCallback) {
+          setImmediate(function () {
+            findAllQueryCallback('Error')
+          })
         }
       }
     }
   )
 
+  const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
+
   findAllMethod.bind(CONNECTOR, Model, cbSpy)()
 
-  t.ok(getTableNameStub.calledOnce)
-  t.ok(getPrimaryKeyColumnStub.calledOnce)
-  t.ok(cbSpy.calledOnce)
-  t.ok(sqlStub.calledOnce)
-  t.ok(cbSpy.calledWith('Error'))
+  setImmediate(function () {
+    t.ok(getTableNameStub.calledOnce)
+    t.ok(getPrimaryKeyColumnStub.calledOnce)
+    t.ok(cbSpy.calledOnce)
+    t.ok(loggerStub.calledOnce)
+    t.ok(sqlStub.calledOnce)
+    t.ok(cbSpy.calledWith('Error'))
 
-  sandbox.restore()
-  t.end()
+    sandbox.restore()
+    t.end()
+  })
 })
 
 test('### Stop Arrow ###', function (t) {

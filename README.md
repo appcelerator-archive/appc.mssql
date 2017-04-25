@@ -38,6 +38,16 @@ var Account = Arrow.Model.extend('account', {
 });
 ```
 
+The types in the database are converted to javascript types as follows:
+
+ * char, varchar, text, nchar, nvarchar, ntext -> to String
+
+ * decimal, money, numeric, smallmoney, real, tinyint, smallint, mediumint, bigint, int, integer, float, bit, double, binary -> to Number
+
+ * datetimeoffset, smalldatetime, datetime2, date, datetime, time, year -> to Date
+
+All other types are converted to String.
+
 ## Development
 
 > This section is for individuals developing the MSSQL Connector and not intended

@@ -249,7 +249,7 @@ test('### Query Response With PrimaryKey ###', function (t) {
     }
   )
 
-   const transformRowStub = sandbox.stub(
+  const transformRowStub = sandbox.stub(
     CONNECTOR,
     'transformRow',
     (Model, row) => {

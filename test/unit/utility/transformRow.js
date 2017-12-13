@@ -19,7 +19,7 @@ test('### transformRow Without Buffer ###', function (t) {
 test('### transformRow With Buffer ###', function (t) {
   const row = {
     rid: 22,
-    title: new Buffer('My Title')
+    title: Buffer.from('My Title')
   }
 
   const response = transformRowMethod('Model', row)

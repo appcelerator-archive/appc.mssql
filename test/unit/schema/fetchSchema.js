@@ -35,7 +35,7 @@ test('### Fetch Schema error ###', function (t) {
       return {
         input: function (param, varChar, id) { },
         query: function (query, callback) {
-          callback('err', [test1])
+          callback(new Error('err'), [test1])
         }
       }
     }

@@ -7,29 +7,29 @@ var CONNECTOR
 
 test('### Start Arrow ###', function (t) {
   server()
-        .then((inst) => {
-          ARROW = inst
-          CONNECTOR = ARROW.getConnector('appc.mssql')
+    .then((inst) => {
+      ARROW = inst
+      CONNECTOR = ARROW.getConnector('appc.mssql')
 
-          t.ok(ARROW, 'Arrow has been started')
-          t.end()
-        })
-        .catch((err) => {
-          t.threw(err)
-        })
+      t.ok(ARROW, 'Arrow has been started')
+      t.end()
+    })
+    .catch((err) => {
+      t.threw(err)
+    })
 })
 
 test('### Get table name when the model is generated ###', function (t) {
-    // Data
+  // Data
   var sandbox = sinon.sandbox.create()
   const Model = ARROW.getModel('Posts')
 
-    // Stubs & spies
-  const getMetaStub = sandbox.stub(Model, 'getMeta', function (tableName) {
+  // Stubs & spies
+  const getMetaStub = sandbox.stub(Model, 'getMeta').callsFake(function (tableName) {
     return 'appc.mssql/Posts'
   })
 
-    // Execution
+  // Execution
   const name = getTableNameMethod.bind(CONNECTOR, Model)()
   t.ok(getMetaStub.calledOnce)
   t.equals(name, 'Posts')
@@ -38,12 +38,12 @@ test('### Get table name when the model is generated ###', function (t) {
 })
 
 test('### Get table name when the model is manually created ###', function (t) {
-    // Data
+  // Data
   var sandbox = sinon.sandbox.create()
   const Model = ARROW.getModel('Posts')
   Model.name = 'Posts'
 
-    // Execution
+  // Execution
   const name = getTableNameMethod.bind(CONNECTOR, Model)()
   t.equals(name, 'Posts')
   sandbox.restore()
@@ -51,13 +51,13 @@ test('### Get table name when the model is manually created ###', function (t) {
 })
 
 test('### Get table name when the model is extended ###', function (t) {
-    // Data
+  // Data
   var sandbox = sinon.sandbox.create()
   const model = ARROW.getModel('Posts')
-  const extendedModel = model.extend('extendedModel', {data: 'test'})
+  const extendedModel = model.extend('extendedModel', { data: 'test' })
   model.name = 'Posts'
 
-    // Execution
+  // Execution
   const name = getTableNameMethod.bind(CONNECTOR, extendedModel)()
   t.equals(name, 'Posts')
   sandbox.restore()

@@ -19,9 +19,9 @@ test('### Should create models from schema ###', function (t) {
     },
     convertDataTypeToJSType: sinon.spy()
   }
-  const arrowModelExtendStub = sinon.stub(Arrow.Model, 'extend', sinon.spy())
+  const arrowModelExtendStub = sinon.stub(Arrow.Model, 'extend').callsFake(sinon.spy())
 
-    // Test call
+  // Test call
   createModelsFromSchema.call(mockConnector)
   t.ok(arrowModelExtendStub.calledOnce)
   t.ok(mockConnector.convertDataTypeToJSType.called)
@@ -49,7 +49,7 @@ test('### Should not create models from schema ###', function (t) {
     convertDataTypeToJSType: sinon.spy()
   }
 
-    // Test call
+  // Test call
   createModelsFromSchema.call(mockConnector)
   t.ok(mockConnector.logger.info.calledOnce)
   t.end()

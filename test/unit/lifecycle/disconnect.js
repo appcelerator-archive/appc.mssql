@@ -1,22 +1,24 @@
 const test = require('tap').test
 const sinon = require('sinon')
+const sinonTest = require('sinon-test')
+const testWrap = sinonTest(sinon)
 const disconnectMethod = require('../../../lib/lifecycle/disconnect')['disconnect']
 
-test('### Test Disconnect method with connection ###', sinon.test(function (t) {
-    // Data
+test('### Test Disconnect method with connection ###', testWrap(function (t) {
+  // Data
   const context = {}
   context.connection = {
     close: function () { }
   }
 
-    // Stubs & spies
+  // Stubs & spies
   function next () { };
   const nextSpy = this.spy(next)
 
-    // Execution
+  // Execution
   disconnectMethod.bind(context, nextSpy)()
 
-    // Test
+  // Test
   t.ok(nextSpy.calledOnce)
   t.ok(nextSpy.args[0].length === 0)
   t.ok(context.connection === null)
@@ -24,18 +26,18 @@ test('### Test Disconnect method with connection ###', sinon.test(function (t) {
   t.end()
 }))
 
-test('### Test Disconnect method no connection ###', sinon.test(function (t) {
-    // Data
+test('### Test Disconnect method no connection ###', testWrap(function (t) {
+  // Data
   const context = {}
 
-    // Stubs & spies
+  // Stubs & spies
   function next () { }
   const nextSpy = this.spy(next)
 
-    // Execution
+  // Execution
   disconnectMethod.bind(context, nextSpy)()
 
-    // Test
+  // Test
   t.ok(nextSpy.calledOnce)
   t.ok(nextSpy.args[0].length === 0)
 

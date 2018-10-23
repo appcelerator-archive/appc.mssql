@@ -1,5 +1,7 @@
 const test = require('tap').test
 const sinon = require('sinon')
+const sinonTest = require('sinon-test')
+const testWrap = sinonTest(sinon)
 const sql = require('mssql')
 const server = require('./../../server.js')
 const addValuesToSQLRequest = require('../../../lib/utility/addValuesToSQLRequest').addValuesToSQLRequest
@@ -8,24 +10,24 @@ var CONNECTOR
 
 test('### Start Arrow ###', function (t) {
   server()
-        .then((inst) => {
-          ARROW = inst
-          CONNECTOR = ARROW.getConnector('appc.mssql')
-          t.ok(ARROW, 'Arrow has been started')
-          t.end()
-        })
-        .catch((err) => {
-          t.threw(err)
-        })
+    .then((inst) => {
+      ARROW = inst
+      CONNECTOR = ARROW.getConnector('appc.mssql')
+      t.ok(ARROW, 'Arrow has been started')
+      t.end()
+    })
+    .catch((err) => {
+      t.threw(err)
+    })
 })
 
-test('### Test Connect method success case (stringType != timestamp) ###', sinon.test(function (t) {
-    // Data
+test('### Test Connect method success case (stringType != timestamp) ###', testWrap(function (t) {
+  // Data
   const model = {}
   const values = { 'title': '', 'content': '' }
 
-    // Mocks, stubs & spies
-  const getTableSchemaStub = this.stub(CONNECTOR, 'getTableSchema', function (model) {
+  // Mocks, stubs & spies
+  const getTableSchemaStub = this.stub(CONNECTOR, 'getTableSchema').callsFake(function (model) {
     return {
       title: {
         DATA_TYPE: 'VarChar',
@@ -37,10 +39,10 @@ test('### Test Connect method success case (stringType != timestamp) ###', sinon
       }
     }
   })
-  const loggerTraceStub = this.stub(CONNECTOR.logger, 'trace', function (message) { })
+  const loggerTraceStub = this.stub(CONNECTOR.logger, 'trace').callsFake(function (message) { })
 
   const request = { input: () => { } }
-  const requestInputStub = this.stub(request, 'input', function (name, type, value) { })
+  const requestInputStub = this.stub(request, 'input').callsFake(function (name, type, value) { })
 
   const sqlMock = this.mock(sql)
   sqlMock.expects('VarChar').withExactArgs(255).exactly(4).returnsThis({
@@ -60,13 +62,13 @@ test('### Test Connect method success case (stringType != timestamp) ###', sinon
   t.end()
 }))
 
-test('### Test Connect method success case (stringType = timestamp, excludeTimestamp = false) ###', sinon.test(function (t) {
-    // Data
+test('### Test Connect method success case (stringType = timestamp, excludeTimestamp = false) ###', testWrap(function (t) {
+  // Data
   const model = {}
   const values = { 'title': '', 'content': '' }
 
-    // Mocks, stubs & spies
-  const getTableSchemaStub = this.stub(CONNECTOR, 'getTableSchema', function (model) {
+  // Mocks, stubs & spies
+  const getTableSchemaStub = this.stub(CONNECTOR, 'getTableSchema').callsFake(function (model) {
     return {
       title: {
         DATA_TYPE: 'TimeStamp',
@@ -78,10 +80,10 @@ test('### Test Connect method success case (stringType = timestamp, excludeTimes
       }
     }
   })
-  const loggerTraceStub = this.stub(CONNECTOR.logger, 'trace', function (message) { })
+  const loggerTraceStub = this.stub(CONNECTOR.logger, 'trace').callsFake(function (message) { })
 
   const request = { input: () => { } }
-  const requestInputStub = this.stub(request, 'input', function (name, type, value) { })
+  const requestInputStub = this.stub(request, 'input').callsFake(function (name, type, value) { })
 
   const sqlMock = this.mock(sql)
   sqlMock.expects('VarChar').withExactArgs(255).exactly(3).returnsThis({
@@ -105,13 +107,13 @@ test('### Test Connect method success case (stringType = timestamp, excludeTimes
   t.end()
 }))
 
-test('### Test Connect method success case (stringType = timestamp, excludeTimestamp = true) ###', sinon.test(function (t) {
-    // Data
+test('### Test Connect method success case (stringType = timestamp, excludeTimestamp = true) ###', testWrap(function (t) {
+  // Data
   const model = {}
   const values = { 'title': '', 'content': '' }
 
-    // Mocks, stubs & spies
-  const getTableSchemaStub = this.stub(CONNECTOR, 'getTableSchema', function (model) {
+  // Mocks, stubs & spies
+  const getTableSchemaStub = this.stub(CONNECTOR, 'getTableSchema').callsFake(function (model) {
     return {
       title: {
         DATA_TYPE: 'TimeStamp',
@@ -123,10 +125,10 @@ test('### Test Connect method success case (stringType = timestamp, excludeTimes
       }
     }
   })
-  const loggerTraceStub = this.stub(CONNECTOR.logger, 'trace', function (message) { })
+  const loggerTraceStub = this.stub(CONNECTOR.logger, 'trace').callsFake(function (message) { })
 
   const request = { input: () => { } }
-  const requestInputStub = this.stub(request, 'input', function (name, type, value) { })
+  const requestInputStub = this.stub(request, 'input').callsFake(function (name, type, value) { })
 
   const sqlMock = this.mock(sql)
   sqlMock.expects('VarChar').withExactArgs(255).exactly(3).returnsThis({

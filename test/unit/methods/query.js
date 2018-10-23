@@ -40,52 +40,32 @@ test('### Query Empty Response ###', function (t) {
     order: { title: '1' }
   }
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, findByIDQueryCallback) {
-          setImmediate(function () {
-            findByIDQueryCallback(null, '')
-          })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, findByIDQueryCallback) {
+        setImmediate(function () {
+          findByIDQueryCallback(null, '')
+        })
       }
     }
-  )
+  })
 
-  const getTableNameStub = sandbox.stub(
-    CONNECTOR,
-    'getTableName',
-    (Model) => {
-      return 'Posts'
-    }
-  )
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake((Model) => {
+    return 'Posts'
+  })
 
-  const getPrimaryKeyColumn = sandbox.stub(
-    CONNECTOR,
-    'getPrimaryKeyColumn',
-    (Model) => {
-      return 'PK'
-    }
-  )
+  const getPrimaryKeyColumn = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake((Model) => {
+    return 'PK'
+  })
 
-  const addValuesToSQLRequestStub = sandbox.stub(
-    CONNECTOR,
-    'addValuesToSQLRequest',
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(
     (Model, where, request, bool) => {
       return null
     }
   )
 
-  const _stub = sandbox.stub(
-    _,
-    'keys',
-    (omit, primaryKey) => {
-      return ['a', 'b']
-    }
-  )
+  const _stub = sandbox.stub(_, 'keys').callsFake((omit, primaryKey) => { return ['a', 'b'] })
 
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
 
@@ -125,48 +105,26 @@ test('### Query Error Response ###', function (t) {
     skip: 1
   }
 
-  const getTableSchemaStub = sandbox.stub(
-    CONNECTOR,
-    'getTableSchema',
-    (Model) => {
-      return 'schema'
-    }
-  )
+  const getTableSchemaStub = sandbox.stub(CONNECTOR, 'getTableSchema').callsFake((Model) => { return 'schema' })
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, findByIDQueryCallback) {
-          setImmediate(function () {
-            findByIDQueryCallback('error')
-          })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, findByIDQueryCallback) {
+        setImmediate(function () {
+          findByIDQueryCallback('error')
+        })
       }
     }
-  )
+  })
 
-  const getTableNameStub = sandbox.stub(
-    CONNECTOR,
-    'getTableName',
-    (Model) => {
-      return 'Posts'
-    }
-  )
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake((Model) => { return 'Posts' })
 
-  const getPrimaryKeyColumn = sandbox.stub(
-    CONNECTOR,
-    'getPrimaryKeyColumn',
-    (Model) => {
-      return 'PK'
-    }
-  )
+  const getPrimaryKeyColumn = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake((Model) => {
+    return 'PK'
+  })
 
-  const addValuesToSQLRequestStub = sandbox.stub(
-    CONNECTOR,
-    'addValuesToSQLRequest',
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(
     (Model, where, request, bool) => {
       return null
     }
@@ -210,60 +168,40 @@ test('### Query Response With PrimaryKey ###', function (t) {
     skip: 1
   }
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, findByIDQueryCallback) {
-          setImmediate(function () {
-            findByIDQueryCallback(null, [data])
-          })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, findByIDQueryCallback) {
+        setImmediate(function () {
+          findByIDQueryCallback(null, [data])
+        })
       }
     }
-  )
+  })
 
-  const getTableNameStub = sandbox.stub(
-    CONNECTOR,
-    'getTableName',
-    (Model) => {
-      return 'Posts'
-    }
-  )
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake((Model) => {
+    return 'Posts'
+  })
 
-  const getPrimaryKeyColumn = sandbox.stub(
-    CONNECTOR,
-    'getPrimaryKeyColumn',
-    (Model) => {
-      return 'PK'
-    }
-  )
+  const getPrimaryKeyColumn = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake((Model) => {
+    return 'PK'
+  })
 
-  const addValuesToSQLRequestStub = sandbox.stub(
-    CONNECTOR,
-    'addValuesToSQLRequest',
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(
     (Model, where, request, bool) => {
       return null
     }
   )
 
-  const transformRowStub = sandbox.stub(
-    CONNECTOR,
-    'transformRow',
+  const transformRowStub = sandbox.stub(CONNECTOR, 'transformRow').callsFake(
     (Model, row) => {
       return {}
     }
   )
 
-  const arrowCollectionStub = sandbox.stub(
-    arrow,
-    'Collection',
-    (Model, rows) => {
-      return data
-    }
-  )
+  const arrowCollectionStub = sandbox.stub(arrow, 'Collection').callsFake((Model, rows) => {
+    return data
+  })
 
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
 
@@ -299,52 +237,30 @@ test('### Query Response Without PrimaryKey ###', function (t) {
     skip: 1
   }
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, findByIDQueryCallback) {
-          setImmediate(function () {
-            findByIDQueryCallback(null, [data])
-          })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, findByIDQueryCallback) {
+        setImmediate(function () {
+          findByIDQueryCallback(null, [data])
+        })
       }
     }
-  )
+  })
 
-  const getTableNameStub = sandbox.stub(
-    CONNECTOR,
-    'getTableName',
-    (Model) => {
-      return 'Posts'
-    }
-  )
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake((Model) => {
+    return 'Posts'
+  })
 
-  const getPrimaryKeyColumn = sandbox.stub(
-    CONNECTOR,
-    'getPrimaryKeyColumn',
-    (Model) => {
-      return false
-    }
-  )
+  const getPrimaryKeyColumn = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake((Model) => {
+    return false
+  })
 
-  const transformRowStub = sandbox.stub(
-    CONNECTOR,
-    'transformRow',
-    (Model, row) => {
-      return {}
-    }
-  )
+  const transformRowStub = sandbox.stub(CONNECTOR, 'transformRow').callsFake((Model, row) => { return {} })
 
-  const arrowCollectionStub = sandbox.stub(
-    arrow,
-    'Collection',
-    (Model, rows) => {
-      return data
-    }
-  )
+  const arrowCollectionStub = sandbox.stub(arrow, 'Collection').callsFake((Model, rows) => {
+    return data
+  })
 
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
 

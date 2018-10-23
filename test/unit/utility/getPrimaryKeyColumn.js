@@ -7,29 +7,29 @@ var CONNECTOR
 
 test('### Start Arrow ###', function (t) {
   server()
-        .then((inst) => {
-          ARROW = inst
-          CONNECTOR = ARROW.getConnector('appc.mssql')
+    .then((inst) => {
+      ARROW = inst
+      CONNECTOR = ARROW.getConnector('appc.mssql')
 
-          t.ok(ARROW, 'Arrow has been started')
-          t.end()
-        })
-        .catch((err) => {
-          t.threw(err)
-        })
+      t.ok(ARROW, 'Arrow has been started')
+      t.end()
+    })
+    .catch((err) => {
+      t.threw(err)
+    })
 })
 
 test('### Get primary key column from model`s metadata###', function (t) {
-    // Data
+  // Data
   var sandbox = sinon.sandbox.create()
   const Model = ARROW.getModel('Posts')
 
-    // Stubs & spies
-  const getMetaStub = sandbox.stub(Model, 'getMeta', function (tableName) {
+  // Stubs & spies
+  const getMetaStub = sandbox.stub(Model, 'getMeta').callsFake(function (tableName) {
     return 'id'
   })
 
-    // Execution
+  // Execution
   const pk = getPrimaryKeyColumnMethod.bind(CONNECTOR, Model)()
   t.ok(getMetaStub.calledOnce)
   t.equals(pk, 'id')
@@ -38,19 +38,19 @@ test('### Get primary key column from model`s metadata###', function (t) {
 })
 
 test('### Get primary key column successfully###', function (t) {
-    // Data
+  // Data
   var sandbox = sinon.sandbox.create()
   const Model = ARROW.getModel('Posts')
 
-    // Stubs & spies
-  const getMetaStub = sandbox.stub(Model, 'getMeta', function (tableName) {
+  // Stubs & spies
+  const getMetaStub = sandbox.stub(Model, 'getMeta').callsFake(function (tableName) {
     return undefined
   })
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const getTableSchemaStub = sandbox.stub(CONNECTOR, 'getTableSchema', function (Model) {
+  const getTableSchemaStub = sandbox.stub(CONNECTOR, 'getTableSchema').callsFake(function (Model) {
     return {
       id: {
         type: String,
@@ -67,7 +67,7 @@ test('### Get primary key column successfully###', function (t) {
     }
   }
 
-    // Execution
+  // Execution
   const pk = getPrimaryKeyColumnMethod.bind(CONNECTOR, Model)()
   t.equals(pk, 'id')
   t.ok(getMetaStub.calledOnce)
@@ -80,19 +80,19 @@ test('### Get primary key column successfully###', function (t) {
 })
 
 test('### Get primary key column when the model has no primary key###', function (t) {
-    // Data
+  // Data
   var sandbox = sinon.sandbox.create()
   const Model = ARROW.getModel('Posts')
 
-    // Stubs & spies
-  const getMetaStub = sandbox.stub(Model, 'getMeta', function (tableName) {
+  // Stubs & spies
+  const getMetaStub = sandbox.stub(Model, 'getMeta').callsFake(function (tableName) {
     return undefined
   })
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const getTableSchemaStub = sandbox.stub(CONNECTOR, 'getTableSchema', function (Model) {
+  const getTableSchemaStub = sandbox.stub(CONNECTOR, 'getTableSchema').callsFake(function (Model) {
     return {
       id: {
         type: String
@@ -108,9 +108,9 @@ test('### Get primary key column when the model has no primary key###', function
     }
   }
 
-    // Execution
+  // Execution
   t.throws(getPrimaryKeyColumnMethod.bind(CONNECTOR, Model),
-        'Posts does not have a primary key column!')
+    'Posts does not have a primary key column!')
   t.ok(getMetaStub.calledOnce)
   t.ok(getTableNameStub.calledOnce)
   t.ok(getTableSchemaStub.calledOnce)

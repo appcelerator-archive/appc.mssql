@@ -28,23 +28,16 @@ test('### Fetch Schema error ###', function (t) {
     TABLE_NAME: 'Posts'
   }
 
-  const sqlStub = sinon.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, callback) {
-          callback(new Error('err'), [test1])
-        }
+  const sqlStub = sinon.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, callback) {
+        callback(new Error('err'), [test1])
       }
     }
-  )
+  })
 
-  const loggerStub = sinon.stub(CONNECTOR.logger,
-    'error',
-    (CONNECTOR) => { }
-  )
+  const loggerStub = sinon.stub(CONNECTOR.logger, 'error').callsFake((CONNECTOR) => { })
 
   fetchSchema.bind(CONNECTOR, nextSpy)()
   t.ok(nextSpy.calledOnce)
@@ -69,18 +62,14 @@ test('### Fetch Schema without error###', function (t) {
       primary_keys: { Posts: 'id' }
     }
 
-  const sqlStub = sinon.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, callback) {
-          callback(null, [test1])
-        }
+  const sqlStub = sinon.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, callback) {
+        callback(null, [test1])
       }
     }
-  )
+  })
   fetchSchema.bind(CONNECTOR, nextSpy)()
   t.ok(nextSpy.calledOnce)
   t.ok(nextSpy.calledWith(null, schema))

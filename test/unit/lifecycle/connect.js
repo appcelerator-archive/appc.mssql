@@ -1,23 +1,25 @@
 const test = require('tap').test
 const sinon = require('sinon')
+const sinonTest = require('sinon-test')
+const testWrap = sinonTest(sinon)
 const connectMethod = require('../../../lib/lifecycle/connect')['connect']
 
-test('### Test Connect method success case ###', sinon.test(function (t) {
-    // Data
+test('### Test Connect method success case ###', testWrap(function (t) {
+  // Data
   const context = {}
   context.config = {}
 
-    // Stubs & spies
+  // Stubs & spies
   const sql = require('mssql')
-  const sqlConnectionStub = this.stub(sql, 'Connection', function (config, cb) { cb() })
+  const sqlConnectionStub = this.stub(sql, 'Connection').callsFake(function (config, cb) { cb() })
 
   function next () { }
   const nextSpy = this.spy(next)
 
-    // Execution
+  // Execution
   connectMethod.bind(context, nextSpy)()
 
-    // Test
+  // Test
   t.ok(sqlConnectionStub.calledOnce)
   t.ok(sqlConnectionStub.calledWith(context.config))
   t.ok(nextSpy.calledOnce)
@@ -26,23 +28,23 @@ test('### Test Connect method success case ###', sinon.test(function (t) {
   t.end()
 }))
 
-test('### Test Connect method error case ###', sinon.test(function (t) {
-    // Data
+test('### Test Connect method error case ###', testWrap(function (t) {
+  // Data
   const context = {}
   context.config = {}
 
-    // Stubs & spies
+  // Stubs & spies
   function next () { };
   const nextSpy = this.spy(next)
 
   const err = new Error()
   const sql = require('mssql')
-  const sqlConnectionStub = this.stub(sql, 'Connection', function (config, cb) { cb(err) })
+  const sqlConnectionStub = this.stub(sql, 'Connection').callsFake(function (config, cb) { cb(err) })
 
-    // Execution
+  // Execution
   connectMethod.bind(context, nextSpy)()
 
-    // Test
+  // Test
   t.ok(sqlConnectionStub.calledOnce)
   t.ok(sqlConnectionStub.calledWith(context.config))
   t.ok(nextSpy.calledOnce)

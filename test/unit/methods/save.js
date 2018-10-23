@@ -38,34 +38,30 @@ test('### Save without result ###', function (t) {
   }
 
   // Stubs & spies
-  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug', function (message) { })
-  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace', function (message) { })
+  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug').callsFake(function (message) { })
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace').callsFake(function (message) { })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) { return ['0', '1'] })
-  const _withoutStub = sandbox.stub(_, 'without', function (payload) { return ['0', '1'] })
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) { return ['0', '1'] })
+  const _withoutStub = sandbox.stub(_, 'without').callsFake(function (payload) { return ['0', '1'] })
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn', function (Model) {
+  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake(function (Model) {
     return 'id'
   })
   var instance = Model.instance({ title: test, content: 'test content' }, false)
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, saveQueryCallback) {
-          setImmediate(function () { saveQueryCallback(null, []) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, saveQueryCallback) {
+        setImmediate(function () { saveQueryCallback(null, []) })
       }
     }
-  )
+  })
 
-  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest', function (Model, values, request, excludeTimeStamp) { })
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(function (Model, values, request, excludeTimeStamp) { })
   function cb (errParameter, instance) { }
   const cbSpy = sandbox.spy(cb)
 
@@ -104,36 +100,32 @@ test('### Save successfully ###', function (t) {
   }
 
   // Stubs & spies
-  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug', function (message) { })
-  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace', function (message) { })
+  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug').callsFake(function (message) { })
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace').callsFake(function (message) { })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) { return ['0', '1'] })
-  const _withoutStub = sandbox.stub(_, 'without', function (payload) { return ['0', '1'] })
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) { return ['0', '1'] })
+  const _withoutStub = sandbox.stub(_, 'without').callsFake(function (payload) { return ['0', '1'] })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn', function (Model) {
+  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake(function (Model) {
     return 'id'
   })
   var instance = Model.instance({ title: test, content: 'test content' }, false)
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, saveQueryCallback) {
-          setImmediate(function () { saveQueryCallback(null, [{ title: 'test' }]) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, saveQueryCallback) {
+        setImmediate(function () { saveQueryCallback(null, [{ title: 'test' }]) })
       }
     }
-  )
+  })
 
-  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest', function (Model, values, request, excludeTimeStamp) { })
-  const transformRow = sandbox.stub(CONNECTOR, 'transformRow', function (Model, row) { return row })
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(function (Model, values, request, excludeTimeStamp) { })
+  const transformRow = sandbox.stub(CONNECTOR, 'transformRow').callsFake(function (Model, row) { return row })
   function cb (errParameter, instance) { }
   const cbSpy = sandbox.spy(cb)
 
@@ -172,36 +164,32 @@ test('### Save successfully without primary key ###', function (t) {
   }
 
   // Stubs & spies
-  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug', function (message) { })
-  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace', function (message) { })
+  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug').callsFake(function (message) { })
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace').callsFake(function (message) { })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) { return ['0', '1'] })
-  const _withoutStub = sandbox.stub(_, 'without', function (payload) { return ['0', '1'] })
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) { return ['0', '1'] })
+  const _withoutStub = sandbox.stub(_, 'without').callsFake(function (payload) { return ['0', '1'] })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn', function (Model) {
+  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake(function (Model) {
     return undefined
   })
   var instance = Model.instance({ title: test, content: 'test content' }, false)
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, saveQueryCallback) {
-          setImmediate(function () { saveQueryCallback(null, [{ title: 'test' }]) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, saveQueryCallback) {
+        setImmediate(function () { saveQueryCallback(null, [{ title: 'test' }]) })
       }
     }
-  )
+  })
 
-  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest', function (Model, values, request, excludeTimeStamp) { })
-  const transformRow = sandbox.stub(CONNECTOR, 'transformRow', function (Model, row) { return row })
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(function (Model, values, request, excludeTimeStamp) { })
+  const transformRow = sandbox.stub(CONNECTOR, 'transformRow').callsFake(function (Model, row) { return row })
   function cb (errParameter, instance) { }
   const cbSpy = sandbox.spy(cb)
 
@@ -240,35 +228,31 @@ test('### Save error case###', function (t) {
   }
 
   // Stubs & spies
-  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug', function (message) { })
-  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace', function (message) { })
+  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug').callsFake(function (message) { })
+  const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace').callsFake(function (message) { })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) { return ['0', '1'] })
-  const _withoutStub = sandbox.stub(_, 'without', function (payload) { return ['0', '1'] })
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) { return ['0', '1'] })
+  const _withoutStub = sandbox.stub(_, 'without').callsFake(function (payload) { return ['0', '1'] })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn', function (Model) {
+  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake(function (Model) {
     return 'id'
   })
   var instance = Model.instance({ title: test, content: 'test content' }, false)
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, saveQueryCallback) {
-          setImmediate(function () { saveQueryCallback('err', []) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, saveQueryCallback) {
+        setImmediate(function () { saveQueryCallback('err', []) })
       }
     }
-  )
+  })
 
-  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest', function (Model, values, request, excludeTimeStamp) { })
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(function (Model, values, request, excludeTimeStamp) { })
   function cb (errParameter, instance) { }
   const cbSpy = sandbox.spy(cb)
 

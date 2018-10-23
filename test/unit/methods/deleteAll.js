@@ -2,41 +2,43 @@ const test = require('tap').test
 const server = require('./../../server.js')
 const deleteAllMethod = require('../../../lib/methods/deleteAll').deleteAll
 const sinon = require('sinon')
+const sinonTest = require('sinon-test')
+const testWrap = sinonTest(sinon)
 const sql = require('mssql')
 var ARROW
 var CONNECTOR
 
 test('### Start Arrow ###', function (t) {
   server()
-        .then((inst) => {
-          ARROW = inst
-          CONNECTOR = ARROW.getConnector('appc.mssql')
-          t.ok(ARROW, 'Arrow has been started')
-          t.end()
-        })
-        .catch((err) => {
-          t.threw(err)
-        })
+    .then((inst) => {
+      ARROW = inst
+      CONNECTOR = ARROW.getConnector('appc.mssql')
+      t.ok(ARROW, 'Arrow has been started')
+      t.end()
+    })
+    .catch((err) => {
+      t.threw(err)
+    })
 })
 
-test('DeleteAll method test - no primaryKey column error case', sinon.test(function (t) {
-    // Data
+test('DeleteAll method test - no primaryKey column error case', testWrap(function (t) {
+  // Data
   const model = ARROW.getModel('Posts')
 
-    // Stubs & spies
-  const getTableNameStub = this.stub(CONNECTOR, 'getTableName', function (model) { return 'posts' })
+  // Stubs & spies
+  const getTableNameStub = this.stub(CONNECTOR, 'getTableName').callsFake(function (model) { return 'posts' })
 
-  const getPrimaryKeyColumnStub = this.stub(CONNECTOR, 'getPrimaryKeyColumn', function (model) {
+  const getPrimaryKeyColumnStub = this.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake(function (model) {
     return undefined
   })
 
   function cb () { }
   const cbSpy = this.spy(cb)
 
-    // Execution
+  // Execution
   deleteAllMethod.bind(CONNECTOR, model, cbSpy)()
 
-    // Test
+  // Test
   t.ok(getTableNameStub.calledOnce)
   t.ok(getTableNameStub.calledWithExactly(model))
   t.ok(getPrimaryKeyColumnStub.calledOnce)
@@ -51,17 +53,17 @@ test('DeleteAll method test - no primaryKey column error case', sinon.test(funct
 
 test('DeleteAll method test - query error case', function (t) {
   var sandbox = sinon.sandbox.create()
-    // Data
+  // Data
   const model = ARROW.getModel('Posts')
 
-    // Stubs & spies
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (model) { return 'posts' })
+  // Stubs & spies
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (model) { return 'posts' })
 
-  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn', function (model) {
+  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake(function (model) {
     return 'id'
   })
 
-  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug', function (message) { })
+  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug').callsFake(function (message) { })
 
   const error = new Error()
   function query (query, callback) {
@@ -71,7 +73,7 @@ test('DeleteAll method test - query error case', function (t) {
   }
   const querySpy = sandbox.spy(query)
 
-  const sqlRequestStub = sandbox.stub(sql, 'Request', function (connection) {
+  const sqlRequestStub = sandbox.stub(sql, 'Request').callsFake(function (connection) {
     return {
       query: querySpy
     }
@@ -80,10 +82,10 @@ test('DeleteAll method test - query error case', function (t) {
   function cb () { }
   const cbSpy = sandbox.spy(cb)
 
-    // Execution
+  // Execution
   deleteAllMethod.bind(CONNECTOR, model, cbSpy)()
 
-    // Test
+  // Test
   setImmediate(() => {
     t.ok(getTableNameStub.calledOnce)
     t.ok(getPrimaryKeyColumnStub.calledOnce)
@@ -102,17 +104,17 @@ test('DeleteAll method test - query error case', function (t) {
 
 test('DeleteAll method test -  success case', function (t) {
   var sandbox = sinon.sandbox.create()
-    // Data
+  // Data
   const model = ARROW.getModel('Posts')
 
-    // Stubs & spies
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (model) { return 'posts' })
+  // Stubs & spies
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (model) { return 'posts' })
 
-  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn', function (model) {
+  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake(function (model) {
     return 'id'
   })
 
-  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug', function (message) { })
+  const loggerDebugStub = sandbox.stub(CONNECTOR.logger, 'debug').callsFake(function (message) { })
 
   function query (query, callback) {
     setImmediate(() => {
@@ -121,7 +123,7 @@ test('DeleteAll method test -  success case', function (t) {
   }
   const querySpy = sandbox.spy(query)
 
-  const sqlRequestStub = sandbox.stub(sql, 'Request', function (connection) {
+  const sqlRequestStub = sandbox.stub(sql, 'Request').callsFake(function (connection) {
     return {
       query: querySpy
     }
@@ -130,10 +132,10 @@ test('DeleteAll method test -  success case', function (t) {
   function cb () { }
   const cbSpy = sandbox.spy(cb)
 
-    // Execution
+  // Execution
   deleteAllMethod.bind(CONNECTOR, model, cbSpy)()
 
-    // Test
+  // Test
   setImmediate(() => {
     t.ok(getTableNameStub.calledOnce)
     t.ok(getPrimaryKeyColumnStub.calledOnce)

@@ -37,31 +37,28 @@ test('### Upsert with nonexisting ID /insert/ successful case ###', function (t)
   }
 
   const instanceTest = Model.instance({ title: 'test', content: 'test content' }, false)
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        query: function (query, upsertQueryCallback) {
-          setImmediate(function () { upsertQueryCallback(null, instanceTest) })
-        },
-        batch: function (query, upsertBatchCallback) {
-          setImmediate(function () { upsertBatchCallback(null, undefined) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      query: function (query, upsertQueryCallback) {
+        setImmediate(function () { upsertQueryCallback(null, instanceTest) })
+      },
+      batch: function (query, upsertBatchCallback) {
+        setImmediate(function () { upsertBatchCallback(null, undefined) })
       }
-    })
+    }
+  })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) {
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) {
     return ['title', 'content', 'id']
   })
 
-  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest', function (Model, values, request, excludeTimeStamp) { })
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(function (Model, values, request, excludeTimeStamp) { })
 
-  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID', function (Model, id, findByIDCb) {
+  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID').callsFake(function (Model, id, findByIDCb) {
     findByIDCb(null, undefined)
   })
 
@@ -104,29 +101,26 @@ test('### Upsert with nonexisting ID error case###', function (t) {
     }
   }
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        query: function (query, upsertQueryCallback) {
-          setImmediate(function () { upsertQueryCallback(null, []) })
-        },
-        batch: function (query, upsertBatchCallback) {
-          setImmediate(function () { upsertBatchCallback('err', []) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      query: function (query, upsertQueryCallback) {
+        setImmediate(function () { upsertQueryCallback(null, []) })
+      },
+      batch: function (query, upsertBatchCallback) {
+        setImmediate(function () { upsertBatchCallback('err', []) })
       }
-    })
+    }
+  })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) {
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) {
     return ['title', 'content', 'id']
   })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID', function (Model, id, findByIDCb) {
+  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID').callsFake(function (Model, id, findByIDCb) {
     findByIDCb()
   })
 
@@ -168,31 +162,28 @@ test('### Upsert with nonexisting ID error case 2 ###', function (t) {
     }
   }
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        query: function (query, upsertQueryCallback) {
-          setImmediate(function () { upsertQueryCallback('err', []) })
-        },
-        batch: function (query, upsertBatchCallback) {
-          setImmediate(function () { upsertBatchCallback(null, []) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      query: function (query, upsertQueryCallback) {
+        setImmediate(function () { upsertQueryCallback('err', []) })
+      },
+      batch: function (query, upsertBatchCallback) {
+        setImmediate(function () { upsertBatchCallback(null, []) })
       }
-    })
+    }
+  })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) {
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) {
     return ['title', 'content', 'id']
   })
 
-  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest', function (Model, values, request, excludeTimeStamp) { })
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(function (Model, values, request, excludeTimeStamp) { })
 
-  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID', function (Model, id, findByIDCb) {
+  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID').callsFake(function (Model, id, findByIDCb) {
     findByIDCb()
   })
 
@@ -260,25 +251,22 @@ test('### Upsert with findByID error ###', function (t) {
     }
   }
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        query: function (query, upsertQueryCallback) {
-          setImmediate(function () { upsertQueryCallback(null, []) })
-        },
-        batch: function (query, upsertBatchCallback) {
-          setImmediate(function () { upsertBatchCallback(null, []) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      query: function (query, upsertQueryCallback) {
+        setImmediate(function () { upsertQueryCallback(null, []) })
+      },
+      batch: function (query, upsertBatchCallback) {
+        setImmediate(function () { upsertBatchCallback(null, []) })
       }
-    })
+    }
+  })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID', function (Model, id, findByIDCb) {
+  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID').callsFake(function (Model, id, findByIDCb) {
     findByIDCb('err', [])
   })
 
@@ -319,31 +307,28 @@ test('### Upsert with existing ID /update/ successful case ###', function (t) {
     }
   }
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        query: function (query, upsertQueryCallback) {
-          setImmediate(function () { upsertQueryCallback(null, []) })
-        },
-        batch: function (query, upsertBatchCallback) {
-          setImmediate(function () { upsertBatchCallback(null, []) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      query: function (query, upsertQueryCallback) {
+        setImmediate(function () { upsertQueryCallback(null, []) })
+      },
+      batch: function (query, upsertBatchCallback) {
+        setImmediate(function () { upsertBatchCallback(null, []) })
       }
-    })
+    }
+  })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) {
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) {
     return ['title', 'content', 'id']
   })
 
-  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest', function (Model, values, request, excludeTimeStamp) { })
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(function (Model, values, request, excludeTimeStamp) { })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
 
-  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID', function (Model, id, findByIDCb) {
+  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID').callsFake(function (Model, id, findByIDCb) {
     setImmediate(function () { findByIDCb(null, { name: 'test', content: 'test' }) })
   })
 
@@ -385,30 +370,27 @@ test('### Upsert with existing ID error case ###', function (t) {
     }
   }
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        query: function (query, upsertQueryCallback) {
-          setImmediate(function () { upsertQueryCallback('err', []) })
-        },
-        batch: function (query, upsertBatchCallback) {
-          setImmediate(function () { upsertBatchCallback(null, []) })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      query: function (query, upsertQueryCallback) {
+        setImmediate(function () { upsertQueryCallback('err', []) })
+      },
+      batch: function (query, upsertBatchCallback) {
+        setImmediate(function () { upsertBatchCallback(null, []) })
       }
-    })
+    }
+  })
 
-  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName', function (Model) {
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake(function (Model) {
     return 'Posts'
   })
-  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest', function (Model, values, request, excludeTimeStamp) { })
+  const addValuesToSQLRequestStub = sandbox.stub(CONNECTOR, 'addValuesToSQLRequest').callsFake(function (Model, values, request, excludeTimeStamp) { })
 
-  const _keysStub = sandbox.stub(_, 'keys', function (payload) {
+  const _keysStub = sandbox.stub(_, 'keys').callsFake(function (payload) {
     return ['title', 'content', 'id']
   })
 
-  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID', function (Model, id, findByIDCb) {
+  const findByIDStub = sandbox.stub(CONNECTOR, 'findByID').callsFake(function (Model, id, findByIDCb) {
     findByIDCb(null, { name: 'test', content: 'test' })
   })
 

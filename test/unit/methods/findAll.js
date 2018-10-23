@@ -30,54 +30,35 @@ test('### FindAll Response With PrimaryKey ###', function (t) {
   const cb = function (errorMessage, data) { }
   const cbSpy = sandbox.spy(cb)
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, findAllQueryCallback) {
-          setImmediate(function () {
-            findAllQueryCallback(null, [data])
-          })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, findAllQueryCallback) {
+        setImmediate(function () {
+          findAllQueryCallback(null, [data])
+        })
       }
     }
+  })
+
+  const transformRowStub = sandbox.stub(CONNECTOR, 'transformRow').callsFake((Model, row) => {
+    return {
+      title: 'Catch-22'
+    }
+  })
+
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake((Model) => {
+    return 'name'
+  })
+
+  const getPrimaryKeyColumn = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake((Model) => {
+    return 'PK'
+  }
   )
 
-  const transformRowStub = sandbox.stub(
-    CONNECTOR,
-    'transformRow',
-    (Model, row) => {
-      return {
-        title: 'Catch-22'
-      }
-    }
-  )
-
-  const getTableNameStub = sandbox.stub(
-    CONNECTOR,
-    'getTableName',
-    (Model) => {
-      return 'name'
-    }
-  )
-
-  const getPrimaryKeyColumn = sandbox.stub(
-    CONNECTOR,
-    'getPrimaryKeyColumn',
-    (Model) => {
-      return 'PK'
-    }
-  )
-
-  const arrowCollectionStub = sandbox.stub(
-    arrow,
-    'Collection',
-    (Model, rows) => {
-      return data
-    }
-  )
+  const arrowCollectionStub = sandbox.stub(arrow, 'Collection').callsFake((Model, rows) => {
+    return data
+  })
 
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
 
@@ -107,56 +88,36 @@ test('### FindByAll Response Without PrimaryKey ###', function (t) {
   const cb = function (errorMessage, data) { }
   const cbSpy = sandbox.spy(cb)
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, findAllQueryCallback) {
-          setImmediate(function () {
-            findAllQueryCallback(null, [data])
-          })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, findAllQueryCallback) {
+        setImmediate(function () {
+          findAllQueryCallback(null, [data])
+        })
       }
     }
-  )
+  })
 
-  const getTableNameStub = sandbox.stub(
-    CONNECTOR,
-    'getTableName',
-    (Model) => {
-      return 'name'
-    }
-  )
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake((Model) => {
+    return 'name'
+  })
 
-  const getPrimaryKeyColumn = sandbox.stub(
-    CONNECTOR,
-    'getPrimaryKeyColumn',
-    (Model) => {
-      return false
-    }
-  )
+  const getPrimaryKeyColumn = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake((Model) => {
+    return false
+  })
 
-  const transformRowStub = sandbox.stub(
-    CONNECTOR,
-    'transformRow',
-    (Model, row) => {
-      return {
-        title: 'Catch-22'
-      }
+  const transformRowStub = sandbox.stub(CONNECTOR, 'transformRow').callsFake((Model, row) => {
+    return {
+      title: 'Catch-22'
     }
-  )
+  })
 
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
 
-  const arrowCollectionStub = sandbox.stub(
-    arrow,
-    'Collection',
-    (Model, rows) => {
-      return data
-    }
-  )
+  const arrowCollectionStub = sandbox.stub(arrow, 'Collection').callsFake((Model, rows) => {
+    return data
+  })
 
   const loggerTraceStub = sandbox.stub(CONNECTOR.logger, 'trace')
 
@@ -184,36 +145,24 @@ test('### FindAll Error ###', function (t) {
   const cb = function (errorMessage, data) { }
   const cbSpy = sandbox.spy(cb)
 
-  const getTableNameStub = sandbox.stub(
-    CONNECTOR,
-    'getTableName',
-    (Model) => {
-      return 'Posts'
-    }
-  )
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake((Model) => {
+    return 'Posts'
+  })
 
-  const getPrimaryKeyColumnStub = sandbox.stub(
-    CONNECTOR,
-    'getPrimaryKeyColumn',
-    (Model) => {
-      return 'PK'
-    }
-  )
+  const getPrimaryKeyColumnStub = sandbox.stub(CONNECTOR, 'getPrimaryKeyColumn').callsFake((Model) => {
+    return 'PK'
+  })
 
-  const sqlStub = sandbox.stub(
-    sql,
-    'Request',
-    (connection) => {
-      return {
-        input: function (param, varChar, id) { },
-        query: function (query, findAllQueryCallback) {
-          setImmediate(function () {
-            findAllQueryCallback('Error')
-          })
-        }
+  const sqlStub = sandbox.stub(sql, 'Request').callsFake((connection) => {
+    return {
+      input: function (param, varChar, id) { },
+      query: function (query, findAllQueryCallback) {
+        setImmediate(function () {
+          findAllQueryCallback('Error')
+        })
       }
     }
-  )
+  })
 
   const loggerStub = sandbox.stub(CONNECTOR.logger, 'debug')
 

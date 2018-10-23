@@ -22,13 +22,9 @@ test('### getTableSchema ###', function (t) {
   const sandbox = sinon.sandbox.create()
   const Model = ARROW.getModel('Posts')
 
-  const getTableNameStub = sandbox.stub(
-    CONNECTOR,
-    'getTableName',
-    (Model) => {
-      return Model.name
-    }
-  )
+  const getTableNameStub = sandbox.stub(CONNECTOR, 'getTableName').callsFake((Model) => {
+    return Model.name
+  })
 
   CONNECTOR.metadata = {
     schema: {
